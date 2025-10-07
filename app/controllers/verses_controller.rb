@@ -1,5 +1,6 @@
 class VersesController < ApplicationController
   def search
-    # Verses.all
+    verses = Verse.all
+    render json: verses
   end
 end
