@@ -1,0 +1,15 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  book: 1
+  chapter: 1
+  favorite: false
+  verse: 1
+  text: MyString
+
+two:
+  book: 1
+  chapter: 1
+  favorite: false
+  verse: 1
+  text: MyString

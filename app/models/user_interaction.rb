@@ -1,0 +1,2 @@
+class UserInteraction < ApplicationRecord
+end
