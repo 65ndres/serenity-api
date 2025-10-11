@@ -1,5 +1,9 @@
+# app/controllers/api/v1/auth_controller.rb
 class Api::V1::AuthController < ApplicationController
   include Devise::Controllers::Helpers
+
+  # Skip authentication for public actions
+  skip_before_action :authenticate_user!, only: [:login, :signup]
 
   def login
     user = User.find_for_authentication(email: params[:email])

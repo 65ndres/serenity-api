@@ -8,7 +8,7 @@ class ApplicationController < ActionController::API
   end
 
   def public_endpoint?
-    # Define public routes if needed (e.g., public verses)
-    false
+    # Allow specific routes to be public
+    request.path.match?(%r{^/api/v1/auth/(login|signup|password)$})
   end
 end
