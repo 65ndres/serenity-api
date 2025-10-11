@@ -4,8 +4,7 @@ Rails.application.routes.draw do
       post 'auth/login', to: 'auth#login'
       post 'auth/signup', to: 'auth#signup'
       delete 'auth/logout', to: 'auth#logout'
-
-      # Protected routes (e.g., verses)
+      post 'auth/password', to: 'passwords#create'
       resources :verses do
         collection do
           get 'search'
@@ -13,5 +12,4 @@ Rails.application.routes.draw do
       end
     end
   end
-
 end

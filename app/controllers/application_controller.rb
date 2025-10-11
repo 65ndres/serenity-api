@@ -4,6 +4,7 @@ class ApplicationController < ActionController::API
   before_action :authenticate_user!, unless: :public_endpoint?
 
   def authenticate_user!
+    # binding.irb
     head :unauthorized unless current_user
   end
 

@@ -1,9 +1,8 @@
-# app/controllers/api/v1/auth_controller.rb
 class Api::V1::AuthController < ApplicationController
   include Devise::Controllers::Helpers
 
   # Skip authentication for public actions
-  skip_before_action :authenticate_user!, only: [:login, :signup]
+  skip_before_action :authenticate_user!, only: [:login, :signup, :logout]
 
   def login
     user = User.find_for_authentication(email: params[:email])
@@ -28,8 +27,22 @@ class Api::V1::AuthController < ApplicationController
   def logout
     token = request.headers['Authorization']&.split&.last
     if token
-      Warden::JWTAuth::TokenRevoker.new.revoke_token(token)
+      begin
+        payload = Warden::JWTAuth::TokenDecoder.new.call(token)
+        if payload['exp'] && Time.at(payload['exp']) < Time.now
+          render json: { error: 'Token has expired' }, status: :unauthorized
+        else
+          JwtDenylist.create(jti: payload['jti'], exp: Time.at(payload['exp'])) if payload['jti']
+          render json: { message: 'Logged out successfully' }, status: :ok
+        end
+      rescue JWT::DecodeError, JWT::ExpiredSignature => e
+        render json: { error: "Invalid or expired token: #{e.message}" }, status: :unauthorized
+      rescue StandardError => e
+        render json: { error: "Failed to revoke token: #{e.message}" }, status: :unprocessable_entity
+      end
+    else
+      render json: { error: 'No token provided' }, status: :bad_request
     end
-    render json: { message: 'Logged out successfully' }, status: :ok
   end
+
 end
