@@ -10,6 +10,10 @@ Rails.application.routes.draw do
           get 'search'
         end
       end
+      resources :subscriptions, only: [:create, :cancel]
+      post 'webhooks/stripe', to: 'webhooks#stripe'
+      post 'webhooks/apple', to: 'webhooks#apple'
+      post 'webhooks/google', to: 'webhooks#google'
     end
   end
 end

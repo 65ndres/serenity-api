@@ -17,6 +17,11 @@ gem "puma", ">= 5.0"
 # Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
 # gem "bcrypt", "~> 3.1.7"
 
+
+gem 'pay', '~> 7.0'
+gem 'stripe', '~> 12.0'
+gem 'sidekiq'
+
 gem 'devise'
 gem 'devise-jwt'
 gem 'rack-cors'  # For CORS with React Native
