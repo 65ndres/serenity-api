@@ -14,7 +14,7 @@ Devise.setup do |config|
   # confirmation, reset password and unlock tokens in the database.
   # Devise will use the `secret_key_base` as its `secret_key`
   # by default. You can change it below and use your own secret key.
-  # config.secret_key = 'eb3e132bf10c38cd874a0a25eaef0907902473a50c1ae7b816f6caf13bb53f3a84ab43bcb8b8d891202cc3299d8d230a8e90335c7cf2c3ccf883a0c4e8e8f28c'
+  config.secret_key = 'eb3e132bf10c38cd874a0a25eaef0907902473a50c1ae7b816f6caf13bb53f3a84ab43bcb8b8d891202cc3299d8d230a8e90335c7cf2c3ccf883a0c4e8e8f28c'
 
   # ==> Controller configuration
   # Configure the parent class to the devise controllers.
@@ -268,6 +268,8 @@ Devise.setup do |config|
   # The default HTTP method used to sign out a resource. Default is :delete.
   config.sign_out_via = :delete
 
+  config.navigational_formats = []
+
   # ==> OmniAuth
   # Add a new OmniAuth provider. Check the wiki for more information on setting
   # up on your models and hooks.
@@ -312,7 +314,7 @@ Devise.setup do |config|
   # config.sign_in_after_change_password = true
   config.jwt do |jwt|
     # binding.irb
-    jwt.secret = Rails.application.credentials.secret_key_base  # Or use a dedicated secret
+    jwt.secret = Rails.application.credentials.devise_jwt_secret_key!
     jwt.dispatch_requests = [
       ['POST', %r{^/api/v1/login$}],
       ['POST', %r{^/api/v1/signup$}]

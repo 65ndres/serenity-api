@@ -1,10 +1,17 @@
-class Api::V1::AuthController < ApplicationController
-  include Devise::Controllers::Helpers
+class Users::SessionsController < Devise::SessionsController
+  include RackSessionsFix
+  # skip_before_action :authenticate
+  # respond_to :json
 
-  # Skip authentication for public actions
-  # skip_before_action :authenticate_user!, only: [:login, :signup, :logout]
 
-  def login
+  def respond_with(current_user, _opts = {})
+    # render json: {
+    #   status: { 
+    #     code: 200, message: 'Logged in successfully.',
+    #     data: { user: UserSerializer.new(current_user).serializable_hash[:data][:attributes] }
+    #   }
+      # render json: { token: token, user: { id: user.id, email: user.email } }, status: :ok
+
     user = User.find_for_authentication(email: params[:email])
     if user&.valid_password?(params[:password])
       token = Warden::JWTAuth::UserEncoder.new.call(user, :user, nil).first
@@ -14,19 +21,23 @@ class Api::V1::AuthController < ApplicationController
     end
   end
 
-  def signup
-    binding.irb
-    user = User.new(email: params[:user][:email], password: params[:user][:password], password_confirmation: params[:user][:password_confirmation])
-    if user.save
-      token = Warden::JWTAuth::UserEncoder.new.call(user, :user, nil).first
-      render json: { token: token, user: { id: user.id, email: user.email } }, status: :created
-    else
-      render json: { errors: user.errors.full_messages }, status: :unprocessable_entity
-    end
-  end
-
-  def logout
-    binding.irb
+  def destroy
+    # if request.headers['Authorization'].present?
+    #   jwt_payload = JWT.decode(request.headers['Authorization'].split(' ').last, 'eb3e132bf10c38cd874a0a25eaef0907902473a50c1ae7b816f6caf13bb53f3a84ab43bcb8b8d891202cc3299d8d230a8e90335c7cf2c3ccf883a0c4e8e8f28c').first
+    #   current_user = User.find(jwt_payload['sub'])
+    # end
+    
+    # if current_user
+    #   render json: {
+    #     status: 200,
+    #     message: 'Logged out successfully.'
+    #   }, status: :ok
+    # else
+    #   render json: {
+    #     status: 401,
+    #     message: "Couldn't find an active session."
+    #   }, status: :unauthorized
+    # end
     token = request.headers['Authorization']&.split&.last
     if token
       begin
@@ -45,6 +56,6 @@ class Api::V1::AuthController < ApplicationController
     else
       render json: { error: 'No token provided' }, status: :bad_request
     end
+  
   end
-
 end

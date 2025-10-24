@@ -26,6 +26,8 @@ gem 'devise'
 gem 'devise-jwt'
 gem 'rack-cors'  # For CORS with React Native
 
+gem 'jsonapi-serializer'
+
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem "tzinfo-data", platforms: %i[ windows jruby ]
 
