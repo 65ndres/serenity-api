@@ -2,7 +2,7 @@ class Api::V1::AuthController < ApplicationController
   include Devise::Controllers::Helpers
 
   # Skip authentication for public actions
-  # skip_before_action :authenticate_user!, only: [:login, :signup, :logout]
+  skip_before_action :authenticate_user!, only: [:login, :signup, :logout]
 
   def login
     user = User.find_for_authentication(email: params[:email])
@@ -15,8 +15,7 @@ class Api::V1::AuthController < ApplicationController
   end
 
   def signup
-    binding.irb
-    user = User.new(email: params[:user][:email], password: params[:user][:password], password_confirmation: params[:user][:password_confirmation])
+    user = User.new(email: params[:email], password: params[:password], password_confirmation: params[:password_confirmation])
     if user.save
       token = Warden::JWTAuth::UserEncoder.new.call(user, :user, nil).first
       render json: { token: token, user: { id: user.id, email: user.email } }, status: :created
@@ -26,7 +25,6 @@ class Api::V1::AuthController < ApplicationController
   end
 
   def logout
-    binding.irb
     token = request.headers['Authorization']&.split&.last
     if token
       begin

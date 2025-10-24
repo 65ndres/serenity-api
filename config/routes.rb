@@ -18,9 +18,9 @@
 Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
-      post 'login', to: 'auth#login'
-      post 'signup', to: 'auth#signup'
-      delete 'logout', to: 'auth#logout'
+      post 'auth/login', to: 'auth#login'
+      post 'auth/signup', to: 'auth#signup'
+      delete 'auth/logout', to: 'auth#logout'
       post 'auth/password', to: 'passwords#create'
       resources :verses do
         collection do
@@ -33,4 +33,6 @@ Rails.application.routes.draw do
       post 'webhooks/google', to: 'webhooks#google'
     end
   end
+
+    get 'verses/search'
 end
