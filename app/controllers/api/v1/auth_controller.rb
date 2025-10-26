@@ -30,7 +30,7 @@ class Api::V1::AuthController < ApplicationController
       begin
         payload = Warden::JWTAuth::TokenDecoder.new.call(token)
         if payload['exp'] && Time.at(payload['exp']) < Time.now
-          render json: { error: 'Token has expired' }, status: :unauthorized
+          render json: { error: 'Token has expired' }, status: :ok
         else
           JwtDenylist.create(jti: payload['jti'], exp: Time.at(payload['exp'])) if payload['jti']
           render json: { message: 'Logged out successfully' }, status: :ok
