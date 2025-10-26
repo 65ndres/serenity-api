@@ -1,121 +1,9 @@
-data = [
-  {
-    "book": "John",
-    "chapter": 3,
-    "verse": 16,
-    "liked": false,
-    "favorited": false,
-    "text": "For God so loved the world, that he gave his only begotten Son, that whosoever believeth in him should not perish, but have everlasting life."
-  },
-  {
-    "book": "Psalms",
-    "chapter": 23,
-    "verse": 1,
-    "liked": false,
-    "favorited": false,
-    "text": "The Lord is my shepherd; I shall not want."
-  },
-  {
-    "book": "Proverbs",
-    "chapter": 3,
-    "verse": 5,
-    "liked": false,
-    "favorited": false,
-    "text": "Trust in the Lord with all thine heart; and lean not unto thine own understanding."
-  },
-  {
-    "book": "Romans",
-    "chapter": 8,
-    "verse": 28,
-    "liked": false,
-    "favorited": false,
-    "text": "And we know that all things work together for good to them that love God, to them who are the called according to his purpose."
-  },
-  {
-    "book": "Philippians",
-    "chapter": 4,
-    "verse": 13,
-    "liked": false,
-    "favorited": false,
-    "text": "I can do all things through Christ which strengtheneth me."
-  },
-  {
-    "book": "Genesis",
-    "chapter": 1,
-    "verse": 1,
-    "liked": false,
-    "favorited": false,
-    "text": "In the beginning God created the heaven and the earth."
-  },
-  {
-    "book": "Matthew",
-    "chapter": 6,
-    "verse": 33,
-    "liked": false,
-    "favorited": false,
-    "text": "But seek ye first the kingdom of God, and his righteousness; and all these things shall be added unto you."
-  },
-  {
-    "book": "Isaiah",
-    "chapter": 40,
-    "verse": 31,
-    "liked": false,
-    "favorited": false,
-    "text": "But they that wait upon the Lord shall renew their strength; they shall mount up with wings as eagles; they shall run, and not be weary; and they shall walk, and not faint."
-  },
-  {
-    "book": "1 Corinthians",
-    "chapter": 13,
-    "verse": 4,
-    "liked": false,
-    "favorited": false,
-    "text": "Charity suffereth long, and is kind; charity envieth not; charity vaunteth not itself, is not puffed up."
-  },
-  {
-    "book": "Jeremiah",
-    "chapter": 29,
-    "verse": 11,
-    "liked": false,
-    "favorited": false,
-    "text": "For I know the thoughts that I think toward you, saith the Lord, thoughts of peace, and not of evil, to give you an expected end."
-  }
-]
-
-data.each do |d|
-  Verse.create!(text: d[:text], book: d[:book], chapter: d[:chapter], favorite: d[:favorited], verse: d[:verse])
-end
-
-
-
-
-
-# db/seeds.rb
-user = User.create(email: 'test@example.com', password: 'password', password_confirmation: 'password')
-tag1 = Tag.create(name: 'Faith')
-tag2 = Tag.create(name: 'Hope')
-tag3 = Tag.create(name: 'Love')
-
-verses = Verse.create([
-  { book: 'Genesis', chapter: 1, verse: 1, text: 'In the beginning God created the heavens and the earth.', liked: false, favorited: false, user: user },
-  { book: 'Genesis', chapter: 1, verse: 2, text: 'The earth was formless and empty...', liked: true, favorited: false, user: user },
-  { book: 'Genesis', chapter: 1, verse: 3, text: 'And God said, "Let there be light," and there was light.', liked: false, favorited: true, user: user },
-])
-
-verses[0].tags = [tag1, tag2] # Genesis 1:1 has Faith, Hope
-verses[1].tags = [tag2, tag3] # Genesis 1:2 has Hope, Love
-verses[2].tags = [tag1, tag3] # Genesis 1:3 has Faith, Love
-
-
-
-# store real data:
-
-anxiety_tag = Tag.create(name: 'Anxiety')
-acceptance_tag = Tag.create(name: 'Acceptance')
-belief_tag = Tag.create(name: 'Belief')
-blessings_tag = Tag.create(name: 'Blessings')
-confidence_tag = Tag.create(name: 'Confidence')
-courage_tag = Tag.create(name: 'Courage')
-
+anxiety_tag = Tag.find_or_create_by(name: 'Anxiety')
+acceptance_tag = Tag.find_or_create_by(name: 'Acceptance')
+belief_tag = Tag.find_or_create_by(name: 'Belief')
+blessings_tag = Tag.find_or_create_by(name: 'Blessings')
+confidence_tag = Tag.find_or_create_by(name: 'Confidence')
+courage_tag = Tag.find_or_create_by(name: 'Courage')
 
 bible = {
   "Corinthians": {
@@ -133,7 +21,8 @@ bible = {
   "Ephesians": {
     "1": {
       "3": {
-        "NIRV": "Give praise to the God and Father of our Lord Jesus Christ. He has blessed us with every spiritual blessing. Those blessings come from the heavenly world. The belong to us because we belong to Christ."
+        "NIRV": "Give praise to the God and Father of our Lord Jesus Christ. He has blessed us with every spiritual blessing. Those blessings come from the heavenly world. The belong to us because we belong to Christ.",
+        "tags": [acceptance_tag]
       },
       "4": {
         "TLB": "Before he made the world. God chose us to be his very own through what Christ would do for us; he decided then to make us holy in his eyes, without a single fault-we who stand before him covered wiht his love.",
@@ -234,7 +123,8 @@ bible = {
     },
     "21": {
       "6": {
-        "NIV": "Surely you have granted him unending blessings and made him glad with the joy of your presence."
+        "NIV": "Surely you have granted him unending blessings and made him glad with the joy of your presence.",
+        "tags": [blessings_tag]
       }
     },
     "23": {
@@ -259,8 +149,8 @@ bible = {
     },
     "120": {
       "1": {
-       "NIRV": "I call out to the LORD when I'm in trouble, and he answers me.",
-       "tags": [anxiety_tag]
+        "NIRV": "I call out to the LORD when I'm in trouble, and he answers me.",
+        "tags": [anxiety_tag]
       }
     }
   },
@@ -281,3 +171,14 @@ bible = {
     }
   }
 }
+
+bible.each do |book, chapter| 
+  chapter.each do | chapter, verse|
+    verse.each do |verse, text_and_tags|
+      tags = text_and_tags.delete(:tags)
+      text_and_tags.each do |source, text|
+        Verse.create!(book:, chapter: chapter.to_s.to_i, verse: verse.to_s.to_i, source: source.to_s, text:, tags:)
+      end
+    end
+  end
+end
