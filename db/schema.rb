@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_10_23_070656) do
+ActiveRecord::Schema[7.2].define(version: 2025_10_26_043423) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -67,6 +67,12 @@ ActiveRecord::Schema[7.2].define(version: 2025_10_23_070656) do
     t.index ["user_id"], name: "index_subscriptions_on_user_id"
   end
 
+  create_table "tags", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "user_interactions", force: :cascade do |t|
     t.integer "user_id"
     t.boolean "liked"
@@ -95,6 +101,15 @@ ActiveRecord::Schema[7.2].define(version: 2025_10_23_070656) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  create_table "verse_tags", force: :cascade do |t|
+    t.bigint "verse_id", null: false
+    t.bigint "tag_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["tag_id"], name: "index_verse_tags_on_tag_id"
+    t.index ["verse_id"], name: "index_verse_tags_on_verse_id"
+  end
+
   create_table "verses", force: :cascade do |t|
     t.integer "book", null: false
     t.integer "chapter", null: false
@@ -103,10 +118,13 @@ ActiveRecord::Schema[7.2].define(version: 2025_10_23_070656) do
     t.string "text", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "source"
   end
 
   add_foreign_key "subscription_events", "subscriptions"
   add_foreign_key "subscription_events", "users"
   add_foreign_key "subscriptions", "plans"
   add_foreign_key "subscriptions", "users"
+  add_foreign_key "verse_tags", "tags"
+  add_foreign_key "verse_tags", "verses"
 end
