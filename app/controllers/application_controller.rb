@@ -4,13 +4,12 @@ class ApplicationController < ActionController::API
   before_action :authenticate_user!, unless: :public_endpoint?
 
   def authenticate_user!
-    # binding.irb
-    head :unauthorized unless authorizided?
+    head :unauthorized unless authorized?
   end
 
 
 
-  def authorizided?
+  def authorized?
     # binding.irb
     token = request.headers['Authorization']&.split&.last
     if token
@@ -29,6 +28,7 @@ class ApplicationController < ActionController::API
 
   def public_endpoint?
     # Allow specific routes to be public
+
     request.path.match?(%r{^/api/v1/auth/(login|signup|password)$})
   end
 end
