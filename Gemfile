@@ -18,7 +18,7 @@ gem "puma", ">= 5.0"
 # gem "bcrypt", "~> 3.1.7"
 
 
-gem 'pay', '~> 7.0'
+gem 'pay', '~> 11.3'
 gem 'stripe', '~> 12.0'
 gem 'sidekiq'
 
