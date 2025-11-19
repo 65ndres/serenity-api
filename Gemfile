@@ -19,7 +19,7 @@ gem "puma", ">= 5.0"
 
 
 gem 'pay', '~> 7.0'
-gem 'stripe', '~> 12.0'
+gem 'stripe', '~> 18.0'
 gem 'sidekiq'
 
 gem 'devise'
