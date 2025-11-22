@@ -73,6 +73,10 @@ bible = {
       "1": {
         "NLT": '"Don\'d let your hearts be troubled. Trust in God, and trust also in me."',
         "tags": [anxiety_tag]
+      },
+      "27": {
+        "OEB": "Peace be with you! My own peace I give you. I do not give to you as the world gives. Do not let your hearts be troubled, or dismayed"
+        "tags": [anxiety_tag]
       }
     },
     "20": {
@@ -150,7 +154,7 @@ bible = {
     "120": {
       "1": {
         "NIRV": "I call out to the LORD when I'm in trouble, and he answers me.",
-        "tags": [anxiety_tag]
+        "tags": [anxiety_tag, belief_tag]
       }
     }
   },
@@ -169,7 +173,16 @@ bible = {
         "tags": [belief_tag]
       }
     }
+  },
+  "2 Timothy": {
+    "1": {
+      "7": {
+        "OEB": "For the Spirit which God gave us was not a spirit of cowardice, but a spirit of power, love, and self-control",
+        "tags": [anxiety_tag, courage_tag]
+      }
+    }
   }
+
 }
 
 bible.each do |book, chapter| 
@@ -182,3 +195,9 @@ bible.each do |book, chapter|
     end
   end
 end
+
+
+
+Timothy 1:7
+
+

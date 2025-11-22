@@ -167,12 +167,11 @@ GEM
     nokogiri (1.18.10-x86_64-linux-musl)
       racc (~> 1.4)
     orm_adapter (0.5.0)
+    pagy (8.6.3)
     parallel (1.27.0)
     parser (3.3.9.0)
       ast (~> 2.4.1)
       racc
-    pay (7.3.0)
-      rails (>= 6.0.0)
     pg (1.6.2)
     pg (1.6.2-aarch64-linux)
     pg (1.6.2-aarch64-linux-musl)
@@ -280,7 +279,6 @@ GEM
       rack (>= 3.1.0)
       redis-client (>= 0.23.2)
     stringio (3.1.7)
-    stripe (12.6.0)
     thor (1.4.0)
     timeout (0.4.3)
     tzinfo (2.0.6)
@@ -321,14 +319,13 @@ DEPENDENCIES
   devise
   devise-jwt
   jsonapi-serializer
-  pay (~> 7.0)
+  pagy (~> 8.0)
   pg (~> 1.1)
   puma (>= 5.0)
   rack-cors
   rails (~> 7.2.2, >= 7.2.2.2)
   rubocop-rails-omakase
   sidekiq
-  stripe (~> 12.0)
   tzinfo-data
 
 BUNDLED WITH

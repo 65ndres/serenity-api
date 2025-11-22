@@ -10,7 +10,6 @@ class ApplicationController < ActionController::API
 
 
   def authorized?
-    # binding.irb
     token = request.headers['Authorization']&.split&.last
     if token
       begin
