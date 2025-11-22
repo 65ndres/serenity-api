@@ -54,6 +54,20 @@ bible = {
         "NIV": "You will keep in perfect peace those whose minds are steadfast, because they trust in you.",
         "tags": [anxiety_tag]
       }
+    },
+    "41": {
+      "10": {
+        "WEB": "Dont you be afraid, for I am with you. Dont be dismayed, for I am your God. I will streghten you. Yes, I will help you. Yes, I will uphold you with the right hand of my righteousness.",
+        "tags": [courage_tag, anxiety_tag]
+      }
+    }
+  },
+  "Jeremiah": {
+    "29": {
+      "11": {
+        "WEB": "'For I know the thoughts that I think toward you', says the LORD, 'thoughts of peace, and not of evil, to give you hope and a future.'",
+        "tags": [anxiety_tag]
+      }
     }
   },
   "John": {
@@ -102,6 +116,14 @@ bible = {
       }
     }
   },
+  "Matthew": {
+    "6": {
+      "34": {
+        "OEB": "Therefore donot be anxious about tomorrow, for tomorrow will bring its own anxieties. Every day has troubled enough of its own.",
+        "tags": [anxiety_tag]
+      }
+    }
+  },
   "Peter": {
     "5": {
       "7": {
@@ -137,6 +159,12 @@ bible = {
         "tags": [courage_tag]
       }
     },
+    "55": { 
+      "22": {
+        "OEB": "Cast your burden on the LORD, and he will sustain you; he will never let the righteous fall.",
+        "tags": [anxiety_tag]
+      }
+    },
     "71": {
       "3": {
         "NJV": "Be my rock of refuge, to which I can always go",
@@ -149,6 +177,12 @@ bible = {
       "5": {
         "NJV": "For you have been my hope, Soverign LORD, my confidence since my youth.",
         "tags": [confidence_tag]
+      }
+    },
+    "94": {
+      "19": {
+        "OEB": "When with cares my heart was crowded, your conforts make me glad.",
+        "tags": [anxiety_tag]
       }
     },
     "120": {
