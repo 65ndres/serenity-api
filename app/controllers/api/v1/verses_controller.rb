@@ -2,14 +2,12 @@ class Api::V1::VersesController < ApplicationController
   include Pagy::Backend
 
   def search
-    scope = nil
+    scope = Verse.all
     if params[:category].present? && params[:category] != "his_will"
       scope = scope.joins(:tags).where(tags: { name: params[:category].capitalize })
-    elsif params[:category] == "his_will"
-      scope = Verse.all
     end
 
-    @pagy, @verses = pagy(scope, items: per_page, count: false)
+    @pagy, @verses = pagy(scope, items: per_page)
 
     render json: {
       verses: @verses,
@@ -25,7 +23,12 @@ class Api::V1::VersesController < ApplicationController
 
   def pagy_metadata(pagy)
     {
-      page:    pagy.page
+      page: pagy.page,
+      per_page: pagy.items,
+      pages: pagy.pages,
+      count: pagy.count,
+      prev: pagy.prev,
+      next: pagy.next
     }
   end
 end
