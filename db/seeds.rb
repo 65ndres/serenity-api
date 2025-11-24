@@ -89,7 +89,7 @@ bible = {
         "tags": [anxiety_tag]
       },
       "27": {
-        "OEB": "Peace be with you! My own peace I give you. I do not give to you as the world gives. Do not let your hearts be troubled, or dismayed"
+        "OEB": "Peace be with you! My own peace I give you. I do not give to you as the world gives. Do not let your hearts be troubled, or dismayed",
         "tags": [anxiety_tag]
       }
     },
@@ -229,9 +229,3 @@ bible.each do |book, chapter|
     end
   end
 end
-
-
-
-Timothy 1:7
-
-

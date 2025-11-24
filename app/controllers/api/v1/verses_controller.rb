@@ -18,7 +18,7 @@ class Api::V1::VersesController < ApplicationController
   private
 
   def per_page
-    (params[:per] || 15).to_i.clamp(1, 100)
+    (params[:per] || 3).to_i.clamp(1, 100)
   end
 
   def pagy_metadata(pagy)
