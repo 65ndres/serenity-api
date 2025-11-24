@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_10_26_043423) do
+ActiveRecord::Schema[7.2].define(version: 2025_11_24_035453) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -79,6 +79,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_10_26_043423) do
     t.bigint "verse_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["user_id", "verse_id"], name: "index_user_interactions_on_user_and_verse", unique: true
     t.index ["verse_id"], name: "index_user_interactions_on_verse_id"
   end
 
@@ -125,6 +126,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_10_26_043423) do
   add_foreign_key "subscription_events", "users"
   add_foreign_key "subscriptions", "plans"
   add_foreign_key "subscriptions", "users"
+  add_foreign_key "user_interactions", "users"
   add_foreign_key "verse_tags", "tags"
   add_foreign_key "verse_tags", "verses"
 end

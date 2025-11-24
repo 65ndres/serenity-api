@@ -26,6 +26,9 @@ Rails.application.routes.draw do
         collection do
           get 'search'
         end
+        member do
+          post 'toggle_like'
+        end
       end
       resources :subscriptions, only: [:create, :cancel]
       post 'webhooks/stripe', to: 'webhooks#stripe'

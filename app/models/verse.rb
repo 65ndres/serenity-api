@@ -18,4 +18,6 @@ class Verse < ApplicationRecord
   ]
   has_many :verse_tags, dependent: :destroy
   has_many :tags, through: :verse_tags
+  has_many :user_interactions, dependent: :destroy
+  has_many :users, through: :user_interactions
 end

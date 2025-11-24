@@ -25,6 +25,20 @@ class ApplicationController < ActionController::API
     false
   end
 
+  def current_user
+    @current_user ||= begin
+      token = request.headers['Authorization']&.split&.last
+      return nil unless token
+
+      begin
+        payload = Warden::JWTAuth::TokenDecoder.new.call(token)
+        User.find(payload['sub']) if authorized?
+      rescue JWT::DecodeError, JWT::ExpiredSignature, ActiveRecord::RecordNotFound
+        nil
+      end
+    end
+  end
+
   def public_endpoint?
     # Allow specific routes to be public
 
