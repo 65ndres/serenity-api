@@ -28,17 +28,24 @@ class Api::V1::VersesController < ApplicationController
   end
 
   def liked
-    @pagy, @verses = pagy(Verse.where(favorite: true), items: per_page)
+    scope = current_user.liked_verses
+    @pagy, @verses = pagy(scope, items: per_page)
+
+    # Include liked status (will be true for all verses in this list)
+    verses_data = @verses.map do |verse|
+      verse_data = verse.as_json
+      verse_data['liked'] = true
+      verse_data
+    end
 
     render json: {
-      verses: @verses,
+      verses: verses_data,
       pagination: pagy_metadata(@pagy)
     }
   end
 
   def toggle_like
     verse = Verse.find(params[:id])
-    binding.irb
     interaction = current_user.user_interactions.find_or_initialize_by(verse: verse)
     
     if interaction.persisted? && interaction.liked?

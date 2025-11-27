@@ -7,8 +7,6 @@ class ApplicationController < ActionController::API
     head :unauthorized unless authorized?
   end
 
-
-
   def authorized?
     token = request.headers['Authorization']&.split&.last
     if token

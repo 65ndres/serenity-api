@@ -30,6 +30,8 @@ Rails.application.routes.draw do
           post 'toggle_like'
         end
       end
+
+      get 'liked', to: 'verses#liked'
       resources :subscriptions, only: [:create, :cancel]
       post 'webhooks/stripe', to: 'webhooks#stripe'
       post 'webhooks/apple', to: 'webhooks#apple'
