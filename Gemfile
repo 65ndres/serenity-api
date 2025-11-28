@@ -21,7 +21,7 @@ gem "puma", ">= 5.0"
 
 gem 'sidekiq'
 
-gem 'pagy', '~> 8.0'
+gem 'pagy', '~> 43.1'
 
 gem 'devise'
 gem 'devise-jwt'
