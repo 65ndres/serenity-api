@@ -36,6 +36,8 @@ Rails.application.routes.draw do
       post 'webhooks/stripe', to: 'webhooks#stripe'
       post 'webhooks/apple', to: 'webhooks#apple'
       post 'webhooks/google', to: 'webhooks#google'
+      get 'user', to: 'users#show'
+      post 'user', to: 'users#update'
     end
   end
 
