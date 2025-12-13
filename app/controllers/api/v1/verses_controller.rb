@@ -29,7 +29,7 @@ class Api::V1::VersesController < ApplicationController
 
   def liked
     scope = current_user.liked_verses
-    @pagy, @verses = pagy(scope, items: per_page)
+    @pagy, @verses = pagy(scope, items: 100)
 
     # Include liked status (will be true for all verses in this list)
     verses_data = @verses.map do |verse|
