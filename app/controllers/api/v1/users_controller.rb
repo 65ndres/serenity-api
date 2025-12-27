@@ -4,7 +4,8 @@ class Api::V1::UsersController < ApplicationController
       render json: {
         first_name: current_user.first_name,
         last_name: current_user.last_name,
-        email: current_user.email
+        email: current_user.email,
+        username: current_user.username
       }, status: :ok
     else
       render json: { error: 'Unauthorized' }, status: :unauthorized
@@ -18,6 +19,7 @@ class Api::V1::UsersController < ApplicationController
           first_name: current_user.first_name,
           last_name: current_user.last_name,
           email: current_user.email,
+          username: current_user.username,
           message: 'Profile updated successfully'
         }, status: :ok
       else
@@ -30,10 +32,33 @@ class Api::V1::UsersController < ApplicationController
     end
   end
 
+  def search
+    query = params[:q]
+    
+    unless query.present?
+      return render json: { error: 'Search query is required' }, status: :bad_request
+    end
+
+    users = User.search_by_username(query)
+      .where.not(id: current_user.id)
+      .limit(20)
+
+    render json: {
+      users: users.map do |user|
+        {
+          id: user.id,
+          username: user.username,
+          first_name: user.first_name,
+          last_name: user.last_name
+        }
+      end
+    }, status: :ok
+  end
+
   private
 
   def user_params
-    params.require(:user).permit(:first_name, :last_name, :email)
+    params.require(:user).permit(:first_name, :last_name, :email, :username)
   end
 end
 

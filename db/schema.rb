@@ -10,9 +10,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_11_24_035453) do
+ActiveRecord::Schema[7.2].define(version: 2025_12_01_000003) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "conversations", force: :cascade do |t|
+    t.bigint "sender_id", null: false
+    t.bigint "receiver_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["receiver_id"], name: "index_conversations_on_receiver_id"
+    t.index ["sender_id", "receiver_id"], name: "index_conversations_on_sender_id_and_receiver_id", unique: true
+    t.index ["sender_id"], name: "index_conversations_on_sender_id"
+  end
 
   create_table "jwt_denylists", force: :cascade do |t|
     t.string "jti"
@@ -20,6 +30,19 @@ ActiveRecord::Schema[7.2].define(version: 2025_11_24_035453) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["jti"], name: "index_jwt_denylists_on_jti"
+  end
+
+  create_table "messages", force: :cascade do |t|
+    t.bigint "conversation_id", null: false
+    t.bigint "sender_id", null: false
+    t.bigint "receiver_id", null: false
+    t.text "body", null: false
+    t.boolean "read", default: false, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["conversation_id"], name: "index_messages_on_conversation_id"
+    t.index ["receiver_id"], name: "index_messages_on_receiver_id"
+    t.index ["sender_id"], name: "index_messages_on_sender_id"
   end
 
   create_table "plans", force: :cascade do |t|
@@ -97,9 +120,11 @@ ActiveRecord::Schema[7.2].define(version: 2025_11_24_035453) do
     t.string "processor"
     t.string "password_digeset"
     t.string "jti"
+    t.string "username"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["jti"], name: "index_users_on_jti"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
+    t.index ["username"], name: "index_users_on_username", unique: true
   end
 
   create_table "verse_tags", force: :cascade do |t|
@@ -122,6 +147,11 @@ ActiveRecord::Schema[7.2].define(version: 2025_11_24_035453) do
     t.integer "source"
   end
 
+  add_foreign_key "conversations", "users", column: "receiver_id"
+  add_foreign_key "conversations", "users", column: "sender_id"
+  add_foreign_key "messages", "conversations"
+  add_foreign_key "messages", "users", column: "receiver_id"
+  add_foreign_key "messages", "users", column: "sender_id"
   add_foreign_key "subscription_events", "subscriptions"
   add_foreign_key "subscription_events", "users"
   add_foreign_key "subscriptions", "plans"
