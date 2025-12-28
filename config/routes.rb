@@ -39,11 +39,7 @@ Rails.application.routes.draw do
       get 'user', to: 'users#show'
       post 'user', to: 'users#update'
       get 'users/search', to: 'users#search'
-      resources :users, only: [] do
-        resources :conversations, only: [:index, :show, :create] do
-          resources :messages, only: [:index, :create]
-        end
-      end
+      get 'user/conversations', to: 'conversations#index'
     end
   end
 

@@ -1,5 +1,6 @@
 class Api::V1::ConversationsController < ApplicationController
   def index
+    # binding.irb
     conversations = current_user.conversations
       .includes(:users, :messages)
       .order(updated_at: :desc)
@@ -18,14 +19,15 @@ class Api::V1::ConversationsController < ApplicationController
         } : nil,
         last_message: last_message ? {
           body: last_message.body,
-          created_at: last_message.created_at,
-          sender_id: last_message.sender_id
+          sender: last_message.sender.first_name + ' ' + last_message.sender.last_name,
+          # created_at: last_message.created_at,
+          # sender_id: last_message.sender_id
         } : nil,
         unread_count: conversation.messages.where(receiver: current_user, read: false).count,
-        updated_at: conversation.updated_at
+        # updated_at: conversation.updated_at
       }
     end
-
+    # binding.irb
     render json: { conversations: conversations_data }, status: :ok
   end
 
