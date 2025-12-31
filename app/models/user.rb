@@ -16,4 +16,43 @@ class User < ApplicationRecord
 
   # Search users by username
   scope :search_by_username, ->(query) { where('username ILIKE ?', "%#{query}%") }
+
+  after_create :generate_username
+  
+  def generate_username
+    return unless email.present?
+    
+    # Extract email username (part before @)
+    email_username = email.split('@').first
+    
+    # List of random words to append
+    random_words = %w[
+      star moon sun ocean river mountain forest valley desert island
+      cloud rainbow thunder lightning storm breeze wave tide shore
+      eagle hawk dove sparrow robin owl falcon swan peacock
+      rose lily tulip daisy sunflower orchid jasmine lavender
+      peace hope faith love joy grace wisdom courage strength
+      warrior guardian protector seeker wanderer explorer dreamer
+      light shadow dawn dusk twilight sunrise sunset horizon
+    ]
+    
+    # Generate username with email and random word, ensuring uniqueness
+    while true
+      random_word = random_words.sample
+      self.username = "#{email_username}_#{random_word}"
+      
+      # Check if username is valid (unique)
+      errors.clear
+      if self.valid?
+        break
+      end
+      
+      # If not unique, try with a random number appended
+      errors.clear
+      self.username = "#{email_username}_#{random_word}_#{rand(1000..9999)}"
+      break if self.valid?
+    end
+    
+    save
+  end
 end

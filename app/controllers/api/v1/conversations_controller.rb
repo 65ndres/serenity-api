@@ -31,7 +31,9 @@ class Api::V1::ConversationsController < ApplicationController
     render json: { conversations: conversations_data }, status: :ok
   end
 
-  def show
+  def new
+    # here we can find or create
+    # binding.irb
     conversation = find_conversation(params[:id])
     
     if conversation
@@ -59,6 +61,21 @@ class Api::V1::ConversationsController < ApplicationController
             created_at: message.created_at
           }
         end
+      }, status: :ok
+    elsif conversation.nil?
+      # Create new conversation
+      conversation = Conversation.create
+      conversation.user_conversations.create(user: current_user)
+      conversation.user_conversations.create(user: other_user)
+      messages = conversation.messages.order(created_at: :asc)
+      render json: {
+        id: conversation.id,
+        other_user: other_user ? {
+          id: other_user.id,
+          username: other_user.username,
+          first_name: other_user.first_name,
+          last_name: other_user.last_name
+        } : nil,
       }, status: :ok
     else
       render json: { error: 'Conversation not found' }, status: :not_found

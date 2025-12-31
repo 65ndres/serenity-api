@@ -10,18 +10,13 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_12_01_000003) do
+ActiveRecord::Schema[7.2].define(version: 2025_12_31_012552) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "conversations", force: :cascade do |t|
-    t.bigint "sender_id", null: false
-    t.bigint "receiver_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["receiver_id"], name: "index_conversations_on_receiver_id"
-    t.index ["sender_id", "receiver_id"], name: "index_conversations_on_sender_id_and_receiver_id", unique: true
-    t.index ["sender_id"], name: "index_conversations_on_sender_id"
   end
 
   create_table "jwt_denylists", force: :cascade do |t|
@@ -96,6 +91,16 @@ ActiveRecord::Schema[7.2].define(version: 2025_12_01_000003) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "user_conversations", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "conversation_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["conversation_id"], name: "index_user_conversations_on_conversation_id"
+    t.index ["user_id", "conversation_id"], name: "index_user_conversations_on_user_id_and_conversation_id", unique: true
+    t.index ["user_id"], name: "index_user_conversations_on_user_id"
+  end
+
   create_table "user_interactions", force: :cascade do |t|
     t.integer "user_id"
     t.boolean "liked"
@@ -145,10 +150,10 @@ ActiveRecord::Schema[7.2].define(version: 2025_12_01_000003) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "source"
+    t.string "address"
+    t.index ["address"], name: "index_verses_on_address"
   end
 
-  add_foreign_key "conversations", "users", column: "receiver_id"
-  add_foreign_key "conversations", "users", column: "sender_id"
   add_foreign_key "messages", "conversations"
   add_foreign_key "messages", "users", column: "receiver_id"
   add_foreign_key "messages", "users", column: "sender_id"
@@ -156,6 +161,8 @@ ActiveRecord::Schema[7.2].define(version: 2025_12_01_000003) do
   add_foreign_key "subscription_events", "users"
   add_foreign_key "subscriptions", "plans"
   add_foreign_key "subscriptions", "users"
+  add_foreign_key "user_conversations", "conversations"
+  add_foreign_key "user_conversations", "users"
   add_foreign_key "user_interactions", "users"
   add_foreign_key "verse_tags", "tags"
   add_foreign_key "verse_tags", "verses"

@@ -5,6 +5,13 @@ class Verse < ApplicationRecord
   validates :verse, presence: true
   validates :text, presence: true
 
+  after_create :generate_address
+  
+  def generate_address
+    self.address = "#{self.book} #{self.chapter} #{self.verse}"
+    self.save
+  end
+
   enum book: [
     :Genesis, :Exodus, :Leviticus, :Numbers, :Deuteronomy, :Joshua, :Judges, :Ruth,
     :"Samuel", :"2 Samuel", :"1 Kings", :"2 Kings", :"1 Chronicles", :"2 Chronicles",

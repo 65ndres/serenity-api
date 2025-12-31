@@ -1,7 +1,9 @@
 class Api::V1::VersesController < ApplicationController
   include Pagy::Backend
 
-  def search
+  def search # this function needs to be updated to handle the actual search functionality
+    # currently this handles the YOUR CHOICE and HIS WILL categories
+
     scope = Verse.all
     if params[:category].present? && params[:category] != "his_will"
       scope = scope.joins(:tags).where(tags: { name: params[:category].capitalize })
@@ -19,6 +21,29 @@ class Api::V1::VersesController < ApplicationController
         verse_data['liked'] = false
       end
       verse_data
+    end
+
+    render json: {
+      verses: verses_data,
+      pagination: pagy_metadata(@pagy)
+    }
+  end
+
+
+  def search_by_address
+    scope = Verse.all
+    
+    if params[:q].present?
+      # Use ILIKE for case-insensitive partial matching
+      address_query = "%#{params[:q]}%"
+      scope = scope.where('address ILIKE ?', address_query)
+    end
+
+    @pagy, @verses = pagy(scope, items: 5)
+
+    # Include liked status if user is authenticated
+    verses_data = @verses.map do |verse|
+      verse_data = verse.as_json
     end
 
     render json: {

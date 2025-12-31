@@ -25,11 +25,14 @@ Rails.application.routes.draw do
       resources :verses do
         collection do
           get 'search'
+          get 'search_by_address'
         end
         member do
           post 'toggle_like'
         end
       end
+
+      post 'conversation/new', to: 'conversations#new'
 
       get 'liked', to: 'verses#liked'
       resources :subscriptions, only: [:create, :cancel]
