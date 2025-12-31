@@ -1,75 +1,52 @@
 class Api::V1::ConversationsController < ApplicationController
   def index
-    # binding.irb
+
     conversations = current_user.conversations
       .includes(:users, :messages)
       .order(updated_at: :desc)
 
     conversations_data = conversations.map do |conversation|
-      # other_user = conversation.other_user(current_user)
       last_message = conversation.messages.order(created_at: :desc).first
       
       {
         id: conversation.id,
         last_message: last_message ? {
           verse: last_message.verse.address,
-          sender: last_message.sender.first_name + ' ' + last_message.sender.last_name,
-          # created_at: last_message.created_at,
-          # sender_id: last_message.sender_id
+          sender: "lol"
         } : nil,
-        unread_count: 0#conversation.messages.where(receiver: current_user, read: false).count,
-        # updated_at: conversation.updated_at
+        unread_count: 0
       }
     end
-    # binding.irb
     render json: { conversations: conversations_data }, status: :ok
   end
 
   def new
-    # here we can find or create
-    # binding.irb
-    conversation = find_conversation(params[:id])
+    conversation = find_conversation(params[:conversation_id])
     
     if conversation
-      other_user = conversation.other_user(current_user)
       messages = conversation.messages.order(created_at: :asc)
-      
-      # Mark messages as read
-      conversation.messages.where(receiver: current_user, read: false).update_all(read: true)
       
       render json: {
         id: conversation.id,
-        other_user: other_user ? {
-          id: other_user.id,
-          username: other_user.username,
-          first_name: other_user.first_name,
-          last_name: other_user.last_name
-        } : nil,
+        current_user_id: current_user.id, 
         messages: messages.map do |message|
           {
             id: message.id,
-            body: message.body,
             sender_id: message.sender_id,
-            receiver_id: message.receiver_id,
+            address: message.verse.address,
             read: message.read,
             created_at: message.created_at
           }
         end
       }, status: :ok
     elsif conversation.nil?
-      # Create new conversation
       conversation = Conversation.create
       conversation.user_conversations.create(user: current_user)
-      conversation.user_conversations.create(user: other_user)
-      messages = conversation.messages.order(created_at: :asc)
+      conversation.user_conversations.create(user: User.find(params[:other_user_id]))
       render json: {
         id: conversation.id,
-        other_user: other_user ? {
-          id: other_user.id,
-          username: other_user.username,
-          first_name: other_user.first_name,
-          last_name: other_user.last_name
-        } : nil,
+        current_user_id: current_user.id, 
+        messages: []
       }, status: :ok
     else
       render json: { error: 'Conversation not found' }, status: :not_found
@@ -87,7 +64,6 @@ class Api::V1::ConversationsController < ApplicationController
       return render json: { error: 'Cannot create conversation with yourself' }, status: :unprocessable_entity
     end
 
-    # Find existing conversation or create new one
     conversation = Conversation.between(current_user, receiver)
     
     unless conversation
