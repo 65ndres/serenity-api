@@ -34,6 +34,11 @@ Rails.application.routes.draw do
 
       post 'conversation/new', to: 'conversations#new'
 
+      resources :conversations, only: [] do
+        resources :messages, only: [:index, :create]
+      end
+
+
       get 'liked', to: 'verses#liked'
       resources :subscriptions, only: [:create, :cancel]
       post 'webhooks/stripe', to: 'webhooks#stripe'

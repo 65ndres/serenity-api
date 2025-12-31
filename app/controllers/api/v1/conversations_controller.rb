@@ -6,24 +6,18 @@ class Api::V1::ConversationsController < ApplicationController
       .order(updated_at: :desc)
 
     conversations_data = conversations.map do |conversation|
-      other_user = conversation.other_user(current_user)
+      # other_user = conversation.other_user(current_user)
       last_message = conversation.messages.order(created_at: :desc).first
       
       {
         id: conversation.id,
-        other_user: other_user ? {
-          id: other_user.id,
-          username: other_user.username,
-          first_name: other_user.first_name,
-          last_name: other_user.last_name
-        } : nil,
         last_message: last_message ? {
-          body: last_message.body,
+          verse: last_message.verse.address,
           sender: last_message.sender.first_name + ' ' + last_message.sender.last_name,
           # created_at: last_message.created_at,
           # sender_id: last_message.sender_id
         } : nil,
-        unread_count: conversation.messages.where(receiver: current_user, read: false).count,
+        unread_count: 0#conversation.messages.where(receiver: current_user, read: false).count,
         # updated_at: conversation.updated_at
       }
     end

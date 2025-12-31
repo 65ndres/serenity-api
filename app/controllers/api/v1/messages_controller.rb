@@ -6,15 +6,28 @@ class Api::V1::MessagesController < ApplicationController
       return render json: { error: 'Conversation not found' }, status: :not_found
     end
 
-    messages = conversation.messages.order(created_at: :asc)
+    messages = conversation.messages.includes(:sender, :receiver).order(created_at: :asc)
+    
+    # Mark messages as read when viewing them
+    conversation.messages.where(receiver: current_user, read: false).update_all(read: true)
     
     render json: {
       messages: messages.map do |message|
         {
           id: message.id,
           body: message.body,
-          sender_id: message.sender_id,
-          receiver_id: message.receiver_id,
+          sender: {
+            id: message.sender.id,
+            username: message.sender.username,
+            first_name: message.sender.first_name,
+            last_name: message.sender.last_name
+          },
+          receiver: {
+            id: message.receiver.id,
+            username: message.receiver.username,
+            first_name: message.receiver.first_name,
+            last_name: message.receiver.last_name
+          },
           read: message.read,
           created_at: message.created_at
         }
@@ -23,33 +36,18 @@ class Api::V1::MessagesController < ApplicationController
   end
 
   def create
+
     conversation = find_conversation(params[:conversation_id])
     
     unless conversation
       return render json: { error: 'Conversation not found' }, status: :not_found
     end
 
-    # For now, assume 2-person conversations. Get the other user as receiver
-    receiver = conversation.other_user(current_user)
-    
-    unless receiver
-      return render json: { error: 'Cannot determine receiver for this conversation' }, status: :unprocessable_entity
-    end
-    
-    message = conversation.messages.build(
-      sender: current_user,
-      receiver: receiver,
-      body: params[:body]
-    )
+    message = conversation.messages.new(verse_id: params[:verse_id], sender: current_user)
+
 
     if message.save
       render json: {
-        id: message.id,
-        body: message.body,
-        sender_id: message.sender_id,
-        receiver_id: message.receiver_id,
-        read: message.read,
-        created_at: message.created_at,
         message: 'Message sent successfully'
       }, status: :created
     else
