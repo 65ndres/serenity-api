@@ -21,7 +21,7 @@ class Api::V1::ConversationsController < ApplicationController
   end
 
   def new
-    conversation = Conversation.between(current_user, User.find(params[:other_user_id]))
+    conversation = find_conversation
 
     if conversation
       messages = conversation.messages.order(created_at: :asc)
@@ -96,6 +96,17 @@ class Api::V1::ConversationsController < ApplicationController
     else
       nil
     end
+  end
+
+
+  def find_conversation
+    conversation = nil
+    if params[:conversation_id]
+      conversation = Conversation.find_by(id: params[:conversation_id])
+    elsif params[:other_user_id]
+      conversation = Conversation.between(current_user, User.find(params[:other_user_id]))
+    end
+    conversation
   end
 end
 
