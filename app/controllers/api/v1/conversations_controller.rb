@@ -7,12 +7,11 @@ class Api::V1::ConversationsController < ApplicationController
 
     conversations_data = conversations.map do |conversation|
       last_message = conversation.messages.order(created_at: :desc).first
-      
       {
         id: conversation.id,
+        conversation_name: conversation.name,
         last_message: last_message ? {
           verse: last_message.verse.address,
-          sender: "lol"
         } : nil,
         unread_count: 0
       }
@@ -28,7 +27,8 @@ class Api::V1::ConversationsController < ApplicationController
       
       render json: {
         id: conversation.id,
-        current_user_id: current_user.id, 
+        current_user_id: current_user.id,
+        conversation_name: conversation.name,
         messages: messages.map do |message|
           {
             id: message.id,
@@ -40,12 +40,14 @@ class Api::V1::ConversationsController < ApplicationController
         end
       }, status: :ok
     elsif conversation.nil?
-      conversation = Conversation.create
+      other_user = User.find(params[:other_user_id]) 
+      conversation = Conversation.create(name: other_user.username)
       conversation.user_conversations.create(user: current_user)
-      conversation.user_conversations.create(user: User.find(params[:other_user_id]))
+      conversation.user_conversations.create(user: other_user)
       render json: {
         id: conversation.id,
         current_user_id: current_user.id, 
+        conversation_name: conversation.name,
         messages: []
       }, status: :ok
     else
