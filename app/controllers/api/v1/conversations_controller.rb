@@ -21,8 +21,8 @@ class Api::V1::ConversationsController < ApplicationController
   end
 
   def new
-    conversation = find_conversation(params[:conversation_id])
-    
+    conversation = Conversation.between(current_user, User.find(params[:other_user_id]))
+
     if conversation
       messages = conversation.messages.order(created_at: :asc)
       
@@ -34,7 +34,7 @@ class Api::V1::ConversationsController < ApplicationController
             id: message.id,
             sender_id: message.sender_id,
             address: message.verse.address,
-            read: message.read,
+            # read: message.read,
             created_at: message.created_at
           }
         end
