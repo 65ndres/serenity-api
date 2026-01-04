@@ -1,7 +1,7 @@
 class Message < ApplicationRecord
   belongs_to :conversation
   belongs_to :sender, class_name: 'User'
-  belongs_to :verse
+  # belongs_to :verse
 
   after_create :mark_conversation_as_unread
 

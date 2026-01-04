@@ -237,6 +237,7 @@ support_user = User.find_or_create_by!(email: 'support@promesas.com') do |user|
   user.username = 'support'
   user.first_name = 'Support'
   user.last_name = 'Team'
+  user.id = 911
 end
 
 10.times do
