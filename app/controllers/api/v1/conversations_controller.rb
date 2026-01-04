@@ -6,14 +6,19 @@ class Api::V1::ConversationsController < ApplicationController
       .order(updated_at: :desc)
 
     conversations_data = conversations.map do |conversation|
-      last_message = conversation.messages.order(created_at: :desc).first
+      last_message = conversation.messages.includes(:verse).order(created_at: :desc).first
+      unread_count = conversation.messages.where.not(sender: current_user).where(read: false).count
+      
       {
         id: conversation.id,
         conversation_name: conversation.name,
+        read: conversation.read,
         last_message: last_message ? {
           verse: last_message.verse.address,
+          time: last_message.created_at.strftime("%d %b %Y"),
+          read: last_message.read
         } : nil,
-        unread_count: 0
+        unread_count: unread_count
       }
     end
     render json: { conversations: conversations_data }, status: :ok
@@ -23,8 +28,11 @@ class Api::V1::ConversationsController < ApplicationController
     conversation = find_conversation
 
     if conversation
-      messages = conversation.messages.order(created_at: :asc)
+      messages = conversation.messages.includes(:verse, :sender).order(created_at: :asc)
       
+      # Mark messages as read when viewing them (mark messages sent by others as read)
+      conversation.messages.where.not(sender: current_user).where(read: false).update_all(read: true)
+      conversation.update(read: true)
       render json: {
         id: conversation.id,
         current_user_id: current_user.id,
@@ -34,7 +42,6 @@ class Api::V1::ConversationsController < ApplicationController
             id: message.id,
             sender_id: message.sender_id,
             address: message.verse.address,
-            # read: message.read,
             created_at: message.created_at
           }
         end
@@ -44,6 +51,7 @@ class Api::V1::ConversationsController < ApplicationController
       conversation = Conversation.create(name: other_user.username)
       conversation.user_conversations.create(user: current_user)
       conversation.user_conversations.create(user: other_user)
+      conversation.update(read: true)
       render json: {
         id: conversation.id,
         current_user_id: current_user.id, 

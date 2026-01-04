@@ -6,28 +6,22 @@ class Api::V1::MessagesController < ApplicationController
       return render json: { error: 'Conversation not found' }, status: :not_found
     end
 
-    messages = conversation.messages.includes(:sender, :receiver).order(created_at: :asc)
+    messages = conversation.messages.includes(:sender, :verse).order(created_at: :asc)
     
-    # Mark messages as read when viewing them
-    conversation.messages.where(receiver: current_user, read: false).update_all(read: true)
+    # Mark messages as read when viewing them (mark messages sent by others as read)
+    conversation.messages.where.not(sender: current_user).where(read: false).update_all(read: true)
     
     render json: {
       messages: messages.map do |message|
         {
           id: message.id,
-          body: message.body,
           sender: {
             id: message.sender.id,
             username: message.sender.username,
             first_name: message.sender.first_name,
             last_name: message.sender.last_name
           },
-          receiver: {
-            id: message.receiver.id,
-            username: message.receiver.username,
-            first_name: message.receiver.first_name,
-            last_name: message.receiver.last_name
-          },
+          address: message.verse&.address,
           read: message.read,
           created_at: message.created_at
         }

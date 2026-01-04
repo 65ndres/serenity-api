@@ -3,7 +3,15 @@ class Message < ApplicationRecord
   belongs_to :sender, class_name: 'User'
   belongs_to :verse
 
+  after_create :mark_conversation_as_unread
+
   scope :unread, -> { where(read: false) }
   scope :read, -> { where(read: true) }
+
+  private
+
+  def mark_conversation_as_unread
+    conversation.update(read: false)
+  end
 end
 
