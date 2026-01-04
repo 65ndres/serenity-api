@@ -1,4 +1,7 @@
 class Api::V1::ConversationsController < ApplicationController
+  include ActionView::Helpers::DateHelper
+
+
   def index
 
     conversations = current_user.conversations
@@ -15,7 +18,7 @@ class Api::V1::ConversationsController < ApplicationController
         read: conversation.read,
         last_message: last_message ? {
           verse: last_message.verse.address,
-          time: last_message.created_at.strftime("%d %b %Y"),
+          time: time_ago_in_words(last_message.created_at) + " ago",
           read: last_message.read
         } : nil,
         unread_count: unread_count

@@ -11,6 +11,7 @@ class User < ApplicationRecord
   has_many :conversations, through: :user_conversations
   has_many :sent_messages, class_name: 'Message', foreign_key: 'sender_id', dependent: :destroy
   has_many :received_messages, class_name: 'Message', foreign_key: 'receiver_id', dependent: :destroy
+  has_many :sent_admin_messages, class_name: 'AdminMessage', foreign_key: 'sender_id', dependent: :destroy
 
   validates :username, presence: true, uniqueness: true, allow_nil: true
 
@@ -18,9 +19,11 @@ class User < ApplicationRecord
   scope :search_by_username, ->(query) { where('username ILIKE ?', "%#{query}%") }
 
   after_create :generate_username
+  after_create :send_welcome_message
   
   def generate_username
     return unless email.present?
+    return if username.present? # Skip if username is already set
     
     # Extract email username (part before @)
     email_username = email.split('@').first
@@ -54,5 +57,27 @@ class User < ApplicationRecord
     end
     
     save
+  end
+
+  def send_welcome_message
+    support_user = User.find_by(email: 'support@promesas.com')
+    return unless support_user
+
+    # Create a conversation between the new user and support
+    conversation = Conversation.between(self, support_user)
+    
+    unless conversation
+      conversation = Conversation.create(name: 'Welcome')
+      conversation.user_conversations.create(user: self)
+      conversation.user_conversations.create(user: support_user)
+    end
+
+    # Create welcome admin message
+    welcome_message = "Welcome to Promesas! We're so glad you're here. We hope you find peace, inspiration, and strength through God's word. If you have any questions or need support, feel free to reach out to us anytime. Blessings!"
+    
+    conversation.admin_messages.create(
+      sender: support_user,
+      body: welcome_message
+    )
   end
 end

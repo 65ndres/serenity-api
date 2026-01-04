@@ -231,6 +231,14 @@ bible.each do |book, chapter|
 end
 
 
+# Create support user
+support_user = User.find_or_create_by!(email: 'support@promesas.com') do |user|
+  user.password = 'Support123!'
+  user.username = 'support'
+  user.first_name = 'Support'
+  user.last_name = 'Team'
+end
+
 10.times do
   User.create!(email: Faker::Internet.email, password: Faker::Internet.password, first_name: Faker::Name.first_name, last_name: Faker::Name.last_name)
 end

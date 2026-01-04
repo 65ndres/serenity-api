@@ -2,6 +2,7 @@ class Conversation < ApplicationRecord
   has_many :user_conversations, dependent: :destroy
   has_many :users, through: :user_conversations
   has_many :messages, dependent: :destroy
+  has_many :admin_messages, dependent: :destroy
 
   # Find or create a conversation between two users
   def self.between(user1, user2)
