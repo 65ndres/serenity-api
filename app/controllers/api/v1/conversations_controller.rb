@@ -26,6 +26,24 @@ class Api::V1::ConversationsController < ApplicationController
     render json: { conversations: conversations_data }, status: :ok
   end
 
+  def admin_conversation
+    conversation = Conversation.find_by(name: "Support")
+    render json: {
+      id: conversation.id,
+      current_user_id: current_user.id,
+      conversation_name: conversation.name,
+      messages: conversation.messages.includes(:sender).order(created_at: :asc).map do |message|
+        {
+          id: message.id,
+          sender_id: message.sender_id,
+          body: message.body,
+          read: message.read,
+          created_at: message.created_at
+        }
+      end
+    }, status: :ok
+  end
+
   def new
     conversation = find_conversation
 

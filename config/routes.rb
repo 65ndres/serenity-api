@@ -36,6 +36,7 @@ Rails.application.routes.draw do
 
       resources :conversations, only: [] do
         resources :messages, only: [:index, :create]
+        get 'admin_conversation', to: 'conversations#admin_conversation'
       end
 
 
