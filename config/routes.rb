@@ -22,6 +22,9 @@ Rails.application.routes.draw do
       post 'auth/signup', to: 'auth#signup'
       delete 'auth/logout', to: 'auth#logout'
       post 'auth/password', to: 'passwords#create'
+      post 'auth/password/verify', to: 'passwords#verify_code'
+      put 'auth/password', to: 'passwords#update'
+      patch 'auth/password', to: 'passwords#update'
       resources :verses do
         collection do
           get 'search'
