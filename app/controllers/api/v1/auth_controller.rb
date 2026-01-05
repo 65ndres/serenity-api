@@ -29,14 +29,27 @@ class Api::V1::AuthController < ApplicationController
     if token
       begin
         payload = Warden::JWTAuth::TokenDecoder.new.call(token)
-        if payload['exp'] && Time.at(payload['exp']) < Time.now
-          render json: { error: 'Token has expired' }, status: :ok
-        else
-          JwtDenylist.create(jti: payload['jti'], exp: Time.at(payload['exp'])) if payload['jti']
-          render json: { message: 'Logged out successfully' }, status: :ok
+        # Add token to denylist if it has a jti
+        if payload['jti']
+          JwtDenylist.create(jti: payload['jti'], exp: payload['exp'] ? Time.at(payload['exp']) : Time.now + 1.hour)
         end
-      rescue JWT::DecodeError, JWT::ExpiredSignature => e
-        render json: { error: "Invalid or expired token: #{e.message}" }, status: :unauthorized
+        render json: { message: 'Logged out successfully' }, status: :ok
+      rescue JWT::ExpiredSignature => e
+        # Handle expired tokens gracefully - decode without verification to get jti
+        begin
+          require 'jwt'
+          # Decode without verification to extract payload from expired token
+          decoded = JWT.decode(token, nil, false)[0]
+          if decoded['jti']
+            JwtDenylist.create(jti: decoded['jti'], exp: decoded['exp'] ? Time.at(decoded['exp']) : Time.now + 1.hour)
+          end
+          render json: { message: 'Token expired, but logged out successfully' }, status: :ok
+        rescue => decode_error
+          # If we can't decode it at all, just return success (token is already invalid)
+          render json: { message: 'Token expired' }, status: :ok
+        end
+      rescue JWT::DecodeError => e
+        render json: { error: "Invalid token: #{e.message}" }, status: :bad_request
       rescue StandardError => e
         render json: { error: "Failed to revoke token: #{e.message}" }, status: :unprocessable_entity
       end

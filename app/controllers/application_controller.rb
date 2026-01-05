@@ -9,18 +9,19 @@ class ApplicationController < ActionController::API
 
   def authorized?
     token = request.headers['Authorization']&.split&.last
-    if token
-      begin
-        payload = Warden::JWTAuth::TokenDecoder.new.call(token)
-        if payload['exp'] && Time.at(payload['exp']) > Time.now
-          return true
-        end
-      rescue JWT::DecodeError, JWT::ExpiredSignature => e
-        return false
-      end
-    end
+    return false unless token
 
-    false
+    begin
+      payload = Warden::JWTAuth::TokenDecoder.new.call(token)
+      # Check if token is expired
+      if payload['exp'] && Time.at(payload['exp']) > Time.now
+        return true
+      end
+      # Token is expired
+      return false
+    rescue JWT::DecodeError, JWT::ExpiredSignature => e
+      return false
+    end
   end
 
   def current_user

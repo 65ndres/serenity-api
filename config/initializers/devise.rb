@@ -322,11 +322,11 @@ Devise.setup do |config|
     jwt.revocation_requests = [
       ['DELETE', %r{^/api/v1/logout$}]
     ]
-    jwt.expiration_time = 8.days.to_i  # Short-lived access token
+    jwt.expiration_time = 60.days.to_i  # Short-lived access token
   end
 
   # Other Devise config (e.g., email confirmation if needed)
-  config.mailer_sender = 'no-reply@yourapp.com'
+  config.mailer_sender = 'no-reply@promesas.com'
 
 end
 
