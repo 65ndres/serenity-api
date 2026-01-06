@@ -33,3 +33,5 @@
 /config/master.key
 
 /config/credentials/development.key
+.envsendgrid.env
+sendgrid.env

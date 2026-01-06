@@ -32,13 +32,46 @@ Rails.application.configure do
   config.active_storage.service = :local
 
   # Don't care if the mailer can't send.
-  config.action_mailer.raise_delivery_errors = false
+  config.action_mailer.raise_delivery_errors = true
 
   # Disable caching for Action Mailer templates even if Action Controller
   # caching is enabled.
   config.action_mailer.perform_caching = false
 
   config.action_mailer.default_url_options = { host: "localhost", port: 3000 }
+
+  # Configure Action Mailer to use SMTP (can be overridden with environment variables)
+  # config.action_mailer.delivery_method = ENV.fetch('MAILER_DELIVERY_METHOD', 'smtp').to_sym
+
+  # # SMTP settings for development
+  # smtp_settings = {
+  #   address: ENV.fetch('SMTP_ADDRESS', 'smtp.gmail.com'),
+  #   port: ENV.fetch('SMTP_PORT', 587).to_i,
+  #   domain: ENV.fetch('SMTP_DOMAIN', 'localhost'),
+  #   enable_starttls_auto: ENV.fetch('SMTP_ENABLE_STARTTLS_AUTO', 'true') == 'true'
+  # }
+
+  # # Add credentials and authentication only if both are provided
+  # smtp_username = ENV['SMTP_USERNAME'].to_s.strip
+  # smtp_password = ENV['SMTP_PASSWORD'].to_s.strip
+  
+  # if smtp_username.present? && smtp_password.present?
+  #   smtp_settings[:user_name] = smtp_username
+  #   smtp_settings[:password] = smtp_password
+  #   smtp_settings[:authentication] = ENV.fetch('SMTP_AUTHENTICATION', 'plain').to_sym
+  # else
+  #   # If using Gmail and no credentials, raise an error
+  #   if ENV.fetch('SMTP_ADDRESS', 'smtp.gmail.com') == 'smtp.gmail.com'
+  #     Rails.logger.warn "SMTP_USERNAME and SMTP_PASSWORD must be set to send emails via Gmail"
+  #   end
+  # end
+  
+  # Add OpenSSL verify mode if specified
+  # if ENV['SMTP_OPENSSL_VERIFY_MODE'].present?
+  #   smtp_settings[:openssl_verify_mode] = ENV['SMTP_OPENSSL_VERIFY_MODE']
+  # end
+
+  # config.action_mailer.smtp_settings = smtp_settings
 
   # Print deprecation notices to the Rails logger.
   config.active_support.deprecation = :log

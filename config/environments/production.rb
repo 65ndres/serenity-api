@@ -73,7 +73,46 @@ Rails.application.configure do
 
   # Ignore bad email addresses and do not raise email delivery errors.
   # Set this to true and configure the email server for immediate delivery to raise delivery errors.
-  # config.action_mailer.raise_delivery_errors = false
+  config.action_mailer.raise_delivery_errors = true
+
+  # Configure Action Mailer to use SMTP
+  config.action_mailer.delivery_method = :smtp
+
+  # Default URL options for mailer links
+  config.action_mailer.default_url_options = { 
+    host: ENV.fetch('MAILER_HOST', 'promesas.com'),
+    protocol: 'https'
+  }
+
+  # SMTP settings
+  smtp_settings = {
+    address: ENV.fetch('SMTP_ADDRESS', 'smtp.gmail.com'),
+    port: ENV.fetch('SMTP_PORT', 587).to_i,
+    domain: ENV.fetch('SMTP_DOMAIN', 'promesas.com'),
+    enable_starttls_auto: ENV.fetch('SMTP_ENABLE_STARTTLS_AUTO', 'true') == 'true'
+  }
+
+  # Add credentials and authentication only if both are provided
+  smtp_username = ENV['SMTP_USERNAME'].to_s.strip
+  smtp_password = ENV['SMTP_PASSWORD'].to_s.strip
+  
+  if smtp_username.present? && smtp_password.present?
+    smtp_settings[:user_name] = smtp_username
+    smtp_settings[:password] = smtp_password
+    smtp_settings[:authentication] = ENV.fetch('SMTP_AUTHENTICATION', 'plain').to_sym
+  else
+    # If using Gmail and no credentials, raise an error
+    if ENV.fetch('SMTP_ADDRESS', 'smtp.gmail.com') == 'smtp.gmail.com'
+      Rails.logger.warn "SMTP_USERNAME and SMTP_PASSWORD must be set to send emails via Gmail"
+    end
+  end
+  
+  # Add OpenSSL verify mode if specified
+  if ENV['SMTP_OPENSSL_VERIFY_MODE'].present?
+    smtp_settings[:openssl_verify_mode] = ENV['SMTP_OPENSSL_VERIFY_MODE']
+  end
+
+  config.action_mailer.smtp_settings = smtp_settings
 
   # Enable locale fallbacks for I18n (makes lookups for any locale fall back to
   # the I18n.default_locale when a translation cannot be found).
