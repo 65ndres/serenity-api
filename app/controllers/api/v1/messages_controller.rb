@@ -30,8 +30,9 @@ class Api::V1::MessagesController < ApplicationController
   end
 
   def create
-    conversation = find_conversation(params[:conversation_id])
     
+    conversation = find_conversation(params[:conversation_id])
+    # binding.irb
     unless conversation
       return render json: { error: 'Conversation not found' }, status: :not_found
     end
@@ -67,15 +68,18 @@ class Api::V1::MessagesController < ApplicationController
   private
 
   def find_conversation(id)
+    # binding.irb
     conversation = Conversation.find_by(id: id)
     return nil unless conversation
     
     # Ensure current user is part of this conversation
-    if conversation.users.include?(current_user)
-      conversation
-    else
-      nil
-    end
+    # if conversation.users.include?(current_user)
+    #   conversation
+    # else
+    #   nil
+    # end
+
+    conversation
   end
 end
 
