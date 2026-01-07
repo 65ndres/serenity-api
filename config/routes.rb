@@ -29,6 +29,7 @@ Rails.application.routes.draw do
         collection do
           get 'search'
           get 'search_by_address'
+          get 'search_by_id'
         end
         member do
           post 'toggle_like'

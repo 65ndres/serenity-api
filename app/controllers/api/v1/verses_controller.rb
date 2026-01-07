@@ -29,6 +29,12 @@ class Api::V1::VersesController < ApplicationController
     }
   end
 
+  def search_by_id  
+    verse = Verse.find(params[:id])
+    render json: {
+      verse: verse.as_json
+    }
+  end
 
   def search_by_address
     scope = Verse.all
