@@ -233,12 +233,15 @@ end
 
 # Create support user
 support_user = User.find_or_create_by!(email: 'support@promesas.com') do |user|
-  user.password = 'Support123!'
-  user.username = 'support'
+  user.password = ENV.fetch('SUPPORT_USER_PASSWORD')
+  user.username = 'Support'
   user.first_name = 'Support'
   user.last_name = 'Team'
   user.id = 911
 end
+
+
+
 
 10.times do
   User.create!(email: Faker::Internet.email, password: Faker::Internet.password, first_name: Faker::Name.first_name, last_name: Faker::Name.last_name)

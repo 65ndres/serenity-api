@@ -1,7 +1,8 @@
-class AdminConversation < ApplicationRecord
-  belongs_to :user
+class AdminConversation < Conversation
+  has_many :user_conversations, dependent: :destroy
+  has_many :users, through: :user_conversations
+  has_many :messages, dependent: :destroy
 
-  validates :body, presence: true
 
   scope :unread, -> { where(read: false) }
   scope :read, -> { where(read: true) }

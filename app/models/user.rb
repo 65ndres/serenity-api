@@ -60,11 +60,26 @@ class User < ApplicationRecord
   end
 
   def send_welcome_message
-    # Create welcome admin conversation
+    return if self.username == "Support"
+    conversation = Conversation.new(name: "Support", conversation_type: 1)
+    support_user = User.find_by(username: "Support")
+    conversation.users << self
+    conversation.users << support_user
+    conversation.save!
+
     welcome_message = "Welcome to Promesas! We're so glad you're here. We hope you find peace, inspiration, and strength through God's word. If you have any questions or need support, feel free to reach out to us anytime. Blessings!"
     
-    admin_conversations.create(
-      body: welcome_message
+    conversation.messages.create(
+      body: welcome_message,
+      sender_id: support_user.id
     )
+    # conversation.save!
   end
+
+
+  # def create_admin_conversation
+  #   admin_conversation = AdminConversation.create!(name: "Support")
+  #   admin_conversation.users << self
+  #   admin_conversation.save!
+  # end
 end

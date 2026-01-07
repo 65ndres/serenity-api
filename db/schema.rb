@@ -10,24 +10,17 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_01_05_000004) do
+ActiveRecord::Schema[7.2].define(version: 2026_01_07_183551) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
-
-  create_table "admin_conversations", force: :cascade do |t|
-    t.bigint "user_id", null: false
-    t.text "body", null: false
-    t.boolean "read", default: false, null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["user_id"], name: "index_admin_conversations_on_user_id"
-  end
 
   create_table "conversations", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "name"
     t.boolean "read", default: false
+    t.integer "conversation_type", default: 0
+    t.index ["conversation_type"], name: "index_conversations_on_conversation_type"
   end
 
   create_table "jwt_denylists", force: :cascade do |t|
@@ -165,7 +158,6 @@ ActiveRecord::Schema[7.2].define(version: 2026_01_05_000004) do
     t.index ["address"], name: "index_verses_on_address"
   end
 
-  add_foreign_key "admin_conversations", "users"
   add_foreign_key "messages", "conversations"
   add_foreign_key "messages", "users", column: "sender_id"
   add_foreign_key "messages", "verses"

@@ -36,10 +36,10 @@ Rails.application.routes.draw do
       end
 
       post 'conversation/new', to: 'conversations#new'
+      get 'conversations/admin_conversation', to: 'conversations#admin_conversation'
 
       resources :conversations, only: [] do
         resources :messages, only: [:index, :create]
-        get 'admin_conversation', to: 'conversations#admin_conversation'
       end
 
 

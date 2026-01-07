@@ -6,6 +6,7 @@ class Api::V1::ConversationsController < ApplicationController
 
     conversations = current_user.conversations
       .includes(:users, :messages)
+      .where(conversation_type: 0)
       .order(updated_at: :desc)
 
     conversations_data = conversations.map do |conversation|
@@ -27,7 +28,7 @@ class Api::V1::ConversationsController < ApplicationController
   end
 
   def admin_conversation
-    conversation = Conversation.find_by(name: "Support")
+    conversation = Conversation.find_by(conversation_type: 1)
     render json: {
       id: conversation.id,
       current_user_id: current_user.id,
