@@ -3,7 +3,6 @@ class Api::V1::ConversationsController < ApplicationController
 
 
   def index
-
     conversations = current_user.conversations
       .includes(:users, :messages)
       .where(conversation_type: 0)
@@ -46,6 +45,7 @@ class Api::V1::ConversationsController < ApplicationController
   end
 
   def new
+
     conversation = find_conversation
 
     if conversation
@@ -54,9 +54,11 @@ class Api::V1::ConversationsController < ApplicationController
       # Mark messages as read when viewing them (mark messages sent by others as read)
       conversation.messages.where.not(sender: current_user).where(read: false).update_all(read: true)
       conversation.update(read: true)
+      other_user = conversation.users.where.not(id: current_user.id).first
       render json: {
         id: conversation.id,
         current_user_id: current_user.id,
+        other_user_id: other_user.id,
         conversation_name: conversation.name,
         messages: messages.map do |message|
           {
@@ -78,11 +80,13 @@ class Api::V1::ConversationsController < ApplicationController
         id: conversation.id,
         current_user_id: current_user.id, 
         conversation_name: conversation.name,
+        other_user_id: other_user.id,
         messages: []
       }, status: :ok
     else
       render json: { error: 'Conversation not found' }, status: :not_found
     end
+
   end
 
   def create
@@ -118,17 +122,17 @@ class Api::V1::ConversationsController < ApplicationController
 
   private
 
-  def find_conversation(id)
-    conversation = Conversation.find_by(id: id)
-    return nil unless conversation
+  # def find_conversation(id)
+  #   conversation = Conversation.find_by(id: id)
+  #   return nil unless conversation
     
-    # Ensure current user is part of this conversation
-    if conversation.users.include?(current_user)
-      conversation
-    else
-      nil
-    end
-  end
+  #   # Ensure current user is part of this conversation
+  #   if conversation.users.include?(current_user)
+  #     conversation
+  #   else
+  #     nil
+  #   end
+  # end
 
 
   def find_conversation

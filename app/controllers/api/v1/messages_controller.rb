@@ -40,7 +40,7 @@ class Api::V1::MessagesController < ApplicationController
     unless params[:body].present?
       return render json: { error: 'Message body is required' }, status: :unprocessable_entity
     end
-
+    # binding.irb
     message = conversation.messages.build(
       sender: current_user,
       body: params[:body]
