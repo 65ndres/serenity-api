@@ -21,7 +21,7 @@ gem 'faker'
 
 gem 'sidekiq'
 
-gem 'pagy', '~> 8.0'
+gem 'pagy', '~> 43.2'
 
 gem 'devise'
 gem 'devise-jwt'
