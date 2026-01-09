@@ -80,6 +80,4 @@ test:
 #
 production:
   <<: *default
-  database: serenity_api_production
-  username: serenity_api
-  password: <%= ENV["SERENITY_API_DATABASE_PASSWORD"] %>
+  url: <%= ENV["DATABASE_URL"] %>
