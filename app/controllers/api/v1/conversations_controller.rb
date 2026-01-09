@@ -71,8 +71,9 @@ class Api::V1::ConversationsController < ApplicationController
         end
       }, status: :ok
     elsif conversation.nil?
-      other_user = User.find(params[:other_user_id]) 
-      conversation = Conversation.create(name: other_user.username)
+      other_user = User.find(params[:other_user_id])
+
+      conversation = Conversation.create(name: define_conversation_name(other_user))
       conversation.user_conversations.create(user: current_user)
       conversation.user_conversations.create(user: other_user)
       conversation.update(read: true)
@@ -87,6 +88,14 @@ class Api::V1::ConversationsController < ApplicationController
       render json: { error: 'Conversation not found' }, status: :not_found
     end
 
+  end
+
+  def define_conversation_name(other_user)
+    if other_user.first_name.present? && other_user.last_name.present?
+      "#{other_user.first_name} #{other_user.last_name}"
+    else
+      other_user.username
+    end
   end
 
   def create
